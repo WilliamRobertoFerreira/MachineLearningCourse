@@ -37,3 +37,11 @@ df_array = df[
 # what are our labels?
 y = df['custcat'].values
 # print(y[0:5])
+
+# normalizing the data
+df_array = (
+    preprocessing.StandardScaler()
+    .fit(df_array)
+    .transform(df_array.astype(float))
+)
+# print(df_array[0:5])

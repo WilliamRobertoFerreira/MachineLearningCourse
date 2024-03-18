@@ -45,3 +45,15 @@ df_array = (
     .transform(df_array.astype(float))
 )
 # print(df_array[0:5])
+
+
+# Let's split our test data to include an out-of-sample subset, enhancing the accuracy of our
+# classification model and guarding against overfitting.
+# 20% of our dataset has been set aside for testing purposes, with a random state of 4 ensuring consistent data division.
+from sklearn.model_selection import train_test_split
+
+x_train, x_test, y_train, y_test = train_test_split(
+    df_array, y, test_size=0.2, random_state=4
+)
+# print('Train set: ', x_train.shape, y_train.shape)
+# print('Test set: ', x_test.shape, y_test.shape)

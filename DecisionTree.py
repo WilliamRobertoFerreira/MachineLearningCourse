@@ -1,10 +1,13 @@
+import sys
+import warnings
 import numpy as np
 import pandas as pd
-import warnings
-import sys
 import sklearn.tree as tree
-from sklearn.tree import DecisionTreeClassifier
+import matplotlib.pyplot as plt
+from sklearn import metrics
 from sklearn import preprocessing
+from sklearn.tree import export_graphviz
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 
 
@@ -22,7 +25,8 @@ df = pd.read_csv('drug200.csv', delimiter=",")
 # print(my_data.shape)
 
 # Defining the matrix and checking
-x = df[['Age', 'Sex', 'BP', 'Cholesterol', 'Na_to_K', 'Drug']].values
+# future note: i maded a mistake, now i need to remove column drug from this array
+x = df[['Age', 'Sex', 'BP', 'Cholesterol', 'Na_to_K']].values
 
 
 # SKlearnig decision tree does not handle categorical variables, cause of that, we can still convert these features to numerical
@@ -48,16 +52,18 @@ x_trainset, x_testset, y_trainset, y_testset = train_test_split(
     x, y, test_size=0.3, random_state=3
 )
 
+# modeling
+drug_tree = DecisionTreeClassifier(criterion='entropy', max_depth=4)
+drug_tree.fit(x_trainset, y_trainset)
+pred_tree = drug_tree.predict(x_testset)
 
-# checking if the dimensions match
-print(
-    f'Shape of X training set {x_trainset.shape}',
-    '&',
-    f' Size of Y training set {y_trainset.shape}',
-)
+# checking accuracy, close to 1.0 = better
+print('DecisionTree accuracy: ', metrics.accuracy_score(y_testset, pred_tree))
 
-print(
-    f'Shape of X training set {x_testset.shape}',
-    '&',
-    f' Size of Y training set {y_testset.shape}',
+# visualization
+export_graphviz(
+    drug_tree,
+    out_file='tree.dot',
+    filled=True,
+    feature_names=['Age', 'Sex', 'BP', 'Cholesterol', 'Na_to_K'],
 )
